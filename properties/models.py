@@ -10,3 +10,13 @@ class Property(models.Model):
 
     def __str__(self):
         return self.title
+
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.core.cache import cache
+
+
+
+@receiver([post_save, post_delete], sender=Property)
+def clear_properties_cache(sender, **kwargs):
+    cache.delete("all_properties")
